@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.ChatComponentText;
@@ -154,20 +155,24 @@ public class CommandHandler extends CommandBase
 			sender.addChatMessage(new ChatComponentError("Unknown command, use /Gt22Core help"));
 			return;
 		}
-		EntityPlayerMP player = getCommandSenderAsPlayer(sender);
-		World world = player.worldObj;
-		MovingObjectPosition block = getTargetBlock(player.worldObj, player, false);
-		int x = 0, y = 0, z = 0;
-		if (block != null)
-		{
-			x = block.blockX;
-			y = block.blockY;
-			z = block.blockZ;
-		}
 		switch (args[0].toLowerCase())
 		{
 			case ("structure"):
 			{
+				if(!(sender instanceof EntityPlayer))
+				{
+					sender.addChatMessage(new ChatComponentError("unable to use structure command from command block"));
+				}
+				EntityPlayerMP player = getCommandSenderAsPlayer(sender);
+				World world = player.worldObj;
+				MovingObjectPosition block = getTargetBlock(player.worldObj, player, false);
+				int x = 0, y = 0, z = 0;
+				if (block != null)
+				{
+					x = block.blockX;
+					y = block.blockY;
+					z = block.blockZ;
+				}
 				switch (args[1].toLowerCase())
 				{
 					case ("set"):
