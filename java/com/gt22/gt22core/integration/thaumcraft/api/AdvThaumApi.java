@@ -95,28 +95,12 @@ public class AdvThaumApi
 	{
 		try
 		{
-			Field proxy = Class.forName("thaumcraft.common.Thaumcraft").getField("proxy");
-			Class<? extends IMessage> pap = (Class<? extends IMessage>) Class.forName("thaumcraft.common.lib.network.playerdata.PacketAspectPool");
-			Constructor<? extends IMessage> conspap = pap.getConstructor(String.class, Short.class, Short.class);
+			Object proxy = Class.forName("thaumcraft.common.Thaumcraft").getField("proxy").get(null);
+			Constructor<? extends IMessage> conspap = ((Class<? extends IMessage>) Class.forName("thaumcraft.common.lib.network.playerdata.PacketAspectPool")).getConstructor(String.class, Short.class, Short.class);
 			AspectList al = ThaumcraftApiHelper.getDiscoveredAspects(player.getCommandSenderName());
-			short value;
-			if (al != null)
-			{
-				value = (short) al.getAmount(aspect);
-			}
-			else
-			{
-				value = 0;
-			}
-			instance.sendTo(conspap.newInstance(aspect.getTag(), Short.valueOf((short) 1), Short.valueOf(value)), (EntityPlayerMP) player);
-			Class core = proxy.getDeclaringClass().getClass();
-			Field playerKnowledge = proxy.get(proxy.get(proxy)).getClass().getField("playerKnowledge");
-			Class playerK = Class.forName("thaumcraft.common.lib.research.PlayerKnowledge");
-			Object pk = playerKnowledge.get(proxy.get(proxy));
-			Class[] params =
-			{ String.class, Aspect.class, short.class, };
-			Method add = pk.getClass().getMethod("addAspectPool", params);
-			return (boolean) add.invoke(pk, player.getCommandSenderName(), aspect, amount);
+			instance.sendTo(conspap.newInstance(aspect.getTag(), Short.valueOf((short) 1), Short.valueOf(al != null ? (short) al.getAmount(aspect) : 0)), (EntityPlayerMP) player);
+			Object pk = proxy.getClass().getField("playerKnowledge").get(proxy);
+			return (boolean) pk.getClass().getMethod("addAspectPool", String.class, Aspect.class, short.class).invoke(pk, player.getCommandSenderName(), aspect, amount);
 		}
 		catch (Exception e)
 		{
