@@ -12,7 +12,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 
-@Mod(modid = Core.modid, name = Core.modid, version = Core.version)
+@Mod(modid = Core.modid, name = Core.modid, version = Core.version, dependencies = "after:Thaumcraft")
 public class Core
 {
 	public static final int majorversion = 1, minorversion = 0, mcversion = 1710, bugfixversion = 0;

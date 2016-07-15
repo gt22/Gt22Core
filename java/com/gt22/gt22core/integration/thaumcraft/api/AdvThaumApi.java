@@ -216,7 +216,7 @@ public class AdvThaumApi
 	{
 		try
 		{
-			return (int) wandclass.getMethod("addVis", ItemStack.class, Aspect.class, int.class, boolean.class).invoke(null, wand, aspect, amount, insertit);
+			return (int) wandclass.getMethod("addVis", ItemStack.class, Aspect.class, int.class, boolean.class).invoke(wandclass.newInstance(), wand, aspect, amount, insertit);
 		}
 		catch (Exception e)
 		{
@@ -236,7 +236,7 @@ public class AdvThaumApi
 	{
 		try
 		{
-			return (ItemStack) wandclass.getMethod("getFocusItem", ItemStack.class).invoke(null, wand);
+			return (ItemStack) wandclass.getMethod("getFocusItem", ItemStack.class).invoke(wandclass.newInstance(), wand);
 		}
 		catch (Exception e)
 		{
@@ -255,7 +255,7 @@ public class AdvThaumApi
 	{
 		try
 		{
-			return (int) wandclass.getMethod("getMaxVis", ItemStack.class).invoke(null, wand);
+			return (int) wandclass.getMethod("getMaxVis", ItemStack.class).invoke(wandclass.newInstance(), wand);
 		}
 		catch (Exception e)
 		{
