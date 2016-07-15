@@ -21,7 +21,7 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 public class AdvThaumApi
 {
 
-	private static Class<?> ph, wandclass;
+	private static Class<?> wandclass;
 	private static SimpleNetworkWrapper instance;
 	
 	/**
@@ -32,8 +32,7 @@ public class AdvThaumApi
 		try
 		{
 			wandclass = Class.forName("thaumcraft.common.items.wands.ItemWandCasting");
-			ph = Class.forName("thaumcraft.common.lib.network.PacketHandler");
-			instance = (SimpleNetworkWrapper) ph.getField("INSTANCE").get(null);
+			instance = (SimpleNetworkWrapper) Class.forName("thaumcraft.common.lib.network.PacketHandler").getField("INSTANCE").get(null);
 		}
 		catch (Exception e)
 		{
