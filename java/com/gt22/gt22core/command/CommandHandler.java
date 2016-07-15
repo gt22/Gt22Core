@@ -20,7 +20,6 @@ import com.gt22.gt22core.utils.ChatComponentSucces;
 
 public class CommandHandler extends CommandBase
 {
-
 	@Override
 	public String getCommandName()
 	{
@@ -41,12 +40,6 @@ public class CommandHandler extends CommandBase
 		ret.add("gt22c");
 		ret.add("gtc");
 		return ret;
-	}
-
-	@Override
-	public int getRequiredPermissionLevel()
-	{
-		return 4;
 	}
 
 	@Override
@@ -149,7 +142,7 @@ public class CommandHandler extends CommandBase
 	@Override
 	public void processCommand(ICommandSender sender, String[] args)
 	{
-		String prefix = "/Gt22 core ";
+		String prefix = "/Gt22Ñore ";
 		if (args.length == 0)
 		{
 			sender.addChatMessage(new ChatComponentError("Unknown command, use /Gt22Core help"));
@@ -323,7 +316,7 @@ public class CommandHandler extends CommandBase
 						sender.addChatMessage(new ChatComponentText(prefix + "set 1/2 - setting first/second point"));
 						sender.addChatMessage(new ChatComponentText(prefix + "clear - clear setted points"));
 						sender.addChatMessage(new ChatComponentText(prefix + "points - display points coords"));
-						sender.addChatMessage(new ChatComponentText(prefix + "save <name> [<weight> <useTarget> <miny> <maxy>] - save structure, than more weight parameter, then more rare will be the structure, setting lesser then 0 will prevent structure from normal generating. Defaul: -1, useTarget can be true or false and will affect structure generation: if true structure will check are all blocks in structure equals target blocks that specified  by block you looking while saving, defauld: false due to structure not generate. forcespawn ignored while creating structure with spawn command"));
+						sender.addChatMessage(new ChatComponentText(prefix + "save <name> [<weight> <useTarget> <miny> <maxy>] [worldid] - save structure, than more weight parameter, then more rare will be the structure, setting lesser then 0 will prevent structure from normal generating. Defaul: -1, useTarget can be true or false and will affect structure generation: if true structure will check are all blocks in structure equals target blocks that specified  by block you looking while saving, defauld: false due to structure not generate. useTarget ignored while creating structure with spawn command, worldid - world where structure shold generate"));
 						sender.addChatMessage(new ChatComponentText(prefix + "remove <name> - removes a structure"));
 						sender.addChatMessage(new ChatComponentText(prefix + "spawn <name> - create strucutre using block that you are looking as point with minimum coordinates"));
 						return;
