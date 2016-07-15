@@ -1,8 +1,8 @@
 package com.gt22.gt22core.core;
 
 import com.gt22.gt22core.command.CommandHandler;
+import com.gt22.gt22core.integration.thaumcraft.api.AdvThaumApi;
 import com.gt22.gt22core.proxy.CommonProxy;
-
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.SidedProxy;
@@ -24,6 +24,7 @@ public class Core
 	@EventHandler
 	public static void preInit(FMLPreInitializationEvent e)
 	{
+		AdvThaumApi.init();
 		proxy.preInit(e);
 	}
 	
