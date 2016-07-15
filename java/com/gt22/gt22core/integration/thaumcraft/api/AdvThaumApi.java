@@ -21,8 +21,25 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 public class AdvThaumApi
 {
 
-	private static final String wandpath = "thaumcraft.common.items.wands.ItemWandCasting";
-
+	private static Class<?> ph, wandclass;
+	private static SimpleNetworkWrapper instance;
+	
+	/**
+	 * Used interanly.
+	 */
+	public static void init()
+	{
+		try
+		{
+			wandclass = Class.forName("thaumcraft.common.items.wands.ItemWandCasting");
+			ph = Class.forName("thaumcraft.common.lib.network.PacketHandler");
+			instance = (SimpleNetworkWrapper) ph.getField("INSTANCE").get(null);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * This array can be used to get aspect from shard meta
 	 */
@@ -59,10 +76,7 @@ public class AdvThaumApi
 	{
 		try
 		{
-			Class resman = Class.forName("thaumcraft.common.lib.research.ResearchManager");
-			Method reduce = resman.getMethod("reduceToPrimals", new Class[]
-			{ AspectList.class, boolean.class });
-			return (AspectList) reduce.invoke(resman.newInstance(), al, merge);
+			return (AspectList) Class.forName("thaumcraft.common.lib.research.ResearchManager").getMethod("reduceToPrimals", AspectList.class, boolean.class).invoke(null, al, merge);
 		}
 		catch (Exception e)
 		{
@@ -82,8 +96,6 @@ public class AdvThaumApi
 	{
 		try
 		{
-			Class ph = Class.forName("thaumcraft.common.lib.network.PacketHandler");
-			SimpleNetworkWrapper instance = (SimpleNetworkWrapper) ph.getField("INSTANCE").get(ph);
 			Field proxy = Class.forName("thaumcraft.common.Thaumcraft").getField("proxy");
 			Class<? extends IMessage> pap = (Class<? extends IMessage>) Class.forName("thaumcraft.common.lib.network.playerdata.PacketAspectPool");
 			Constructor<? extends IMessage> conspap = pap.getConstructor(String.class, Short.class, Short.class);
@@ -122,11 +134,7 @@ public class AdvThaumApi
 	{
 		try
 		{
-			Class ph = Class.forName("thaumcraft.common.lib.network.PacketHandler");
-			SimpleNetworkWrapper instance = (SimpleNetworkWrapper) ph.getField("INSTANCE").get(ph);
-			Class<? extends IMessage> pmc = (Class<? extends IMessage>) Class.forName("thaumcraft.common.lib.network.misc.PacketMiscEvent");
-			Constructor<? extends IMessage> conspmc = pmc.getConstructor(short.class);
-			instance.sendTo(conspmc.newInstance((short) 0), (EntityPlayerMP) player);
+			((SimpleNetworkWrapper) Class.forName("thaumcraft.common.lib.network.PacketHandler").getField("INSTANCE").get(null)).sendTo(((Constructor<? extends IMessage>) Class.forName("thaumcraft.common.lib.network.misc.PacketMiscEvent").getConstructor(short.class)).newInstance((short) 0), (EntityPlayerMP) player);
 		}
 		catch (Exception e)
 		{
@@ -144,26 +152,15 @@ public class AdvThaumApi
 	{
 		try
 		{
-			Class ph = Class.forName("thaumcraft.common.lib.network.PacketHandler");
-			SimpleNetworkWrapper instance = (SimpleNetworkWrapper) ph.getField("INSTANCE").get(ph);
-			Field proxy = Class.forName("thaumcraft.common.Thaumcraft").getField("proxy");
-			Class<? extends IMessage> prc = (Class<? extends IMessage>) Class.forName("thaumcraft.common.lib.network.playerdata.PacketResearchComplete");
-			Constructor<? extends IMessage> consprc = prc.getConstructor(String.class);
-			instance.sendTo(consprc.newInstance(research), (EntityPlayerMP) player);
-			Class clientproxy = Class.forName("thaumcraft.client.ClientProxy");
-			Field researchManag = proxy.get(clientproxy).getClass().getField("researchManager");
-			Class[] params = new Class[2];
-			params[0] = EntityPlayerMP.class;
-			params[1] = String.class;
-			Class resMan = Class.forName("thaumcraft.common.lib.research.ResearchManager");
-			Object resm = researchManag.get(proxy);
-			resm.getClass().getMethod("completeResearch", params).invoke(resm, (EntityPlayerMP) player, research);
+			instance.sendTo(((Class<? extends IMessage>) Class.forName("thaumcraft.common.lib.network.playerdata.PacketResearchComplete")).getConstructor(String.class).newInstance(research), (EntityPlayerMP) player);
+			Object proxy = Class.forName("thaumcraft.common.Thaumcraft").getField("proxy").get(null);
+			Object resm = proxy.getClass().getField("researchManager").get(proxy);
+			resm.getClass().getMethod("completeResearch", EntityPlayerMP.class, String.class).invoke(resm, (EntityPlayerMP) player, research);
 		}
 		catch (Exception e)
 		{
 			System.out.println("Unable to give research");
 			e.printStackTrace();
-			//Minecraft.getMinecraft().shutdown();
 		}
 
 	}
@@ -175,40 +172,14 @@ public class AdvThaumApi
 	 */
 	public static void setVis(ItemStack wand, AspectList aspects)
 	{
-		Class wandclass = null;
 		try
 		{
-			wandclass = Class.forName(wandpath);
+			wandclass.getMethod("storeAllVis", ItemStack.class, AspectList.class).invoke(wandclass.newInstance(), wand, aspects);
 		}
-		catch (ClassNotFoundException e1)
-		{
-			System.out.println("Unable to find wand class from thaumcraft");
-			e1.printStackTrace();
-			Minecraft.getMinecraft().shutdown();
-		}
-		Method set = null;
-		try
-		{
-			Class[] params = new Class[2];
-			params[0] = ItemStack.class;
-			params[1] = AspectList.class;
-			set = wandclass.getMethod("storeAllVis", params);
-		}
-		catch (NoSuchMethodException | SecurityException e)
-		{
-			System.out.println("Unable to find storeAllVis method from wand class from thaumcraft");
-			e.printStackTrace();
-			Minecraft.getMinecraft().shutdown();
-		}
-		try
-		{
-			set.invoke(wandclass.newInstance(), wand, aspects);
-		}
-		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e)
+		catch (Exception e)
 		{
 			System.out.println("Unable to invoke storeAllVis method from thaumcraft");
 			e.printStackTrace();
-			Minecraft.getMinecraft().shutdown();
 		}
 	}
 
@@ -220,36 +191,11 @@ public class AdvThaumApi
 	 */
 	public static int getVis(ItemStack wand, Aspect aspect)
 	{
-		Class wandclass = null;
 		try
 		{
-			wandclass = Class.forName(wandpath);
+			return (int) wandclass.getMethod("getVis", ItemStack.class, Aspect.class).invoke(wandclass.newInstance(), wand, aspect);
 		}
-		catch (ClassNotFoundException e1)
-		{
-			System.out.println("Unable to find wand class from thaumcraft");
-			e1.printStackTrace();
-			Minecraft.getMinecraft().shutdown();
-		}
-		Method get = null;
-		try
-		{
-			Class[] params = new Class[2];
-			params[0] = ItemStack.class;
-			params[1] = Aspect.class;
-			get = wandclass.getMethod("getVis", params);
-		}
-		catch (NoSuchMethodException | SecurityException e)
-		{
-			System.out.println("Unable to find getVis method from wand class from thaumcraft");
-			e.printStackTrace();
-			Minecraft.getMinecraft().shutdown();
-		}
-		try
-		{
-			return (int) get.invoke(wandclass.newInstance(), wand, aspect);
-		}
-		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e)
+		catch (Exception e)
 		{
 			System.out.println("Unable to invoke getVis method from thaumcraft");
 			e.printStackTrace();
@@ -270,7 +216,7 @@ public class AdvThaumApi
 	{
 		try
 		{
-			return (int) Class.forName(wandpath).getMethod("addVis", ItemStack.class, Aspect.class, int.class, boolean.class).invoke(null, wand, aspect, amount, insertit);
+			return (int) wandclass.getMethod("addVis", ItemStack.class, Aspect.class, int.class, boolean.class).invoke(null, wand, aspect, amount, insertit);
 		}
 		catch (Exception e)
 		{
@@ -290,7 +236,7 @@ public class AdvThaumApi
 	{
 		try
 		{
-			return (ItemStack) Class.forName(wandpath).getMethod("getFocusItem", ItemStack.class).invoke(null, wand);
+			return (ItemStack) wandclass.getMethod("getFocusItem", ItemStack.class).invoke(null, wand);
 		}
 		catch (Exception e)
 		{
@@ -309,7 +255,7 @@ public class AdvThaumApi
 	{
 		try
 		{
-			return (int) Class.forName(wandpath).getMethod("getMaxVis", ItemStack.class).invoke(null, wand);
+			return (int) wandclass.getMethod("getMaxVis", ItemStack.class).invoke(null, wand);
 		}
 		catch (Exception e)
 		{
