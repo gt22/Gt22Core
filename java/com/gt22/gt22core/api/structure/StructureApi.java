@@ -324,7 +324,7 @@ public class StructureApi
 			}
 			if(miny > maxy || miny < 0 || maxy > world.getActualHeight())
 			{
-				throw new IllegalArgumentException("Incorrect height argumentas");
+				throw new IllegalArgumentException("Incorrect height arguments");
 			}
 			addToStructureList(name);
 			this.weight = weight;
