@@ -13,7 +13,8 @@ public interface IMod
 	 */
 	public CreativeTabs[] getCreativeTabs();
 	/**
-	 * Used to get modid, used mostly for textures
+	 * Used mostly for textures
+	 * @return modid of mod
 	 */
 	public String getModid();
 }
