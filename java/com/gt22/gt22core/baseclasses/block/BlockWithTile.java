@@ -28,6 +28,7 @@ public class BlockWithTile extends BlockBase implements ITileEntityProvider
 		this.te = te;
 		this.constructorArgs = constructorArgs;
 		this.consturctorInvokeArgs = consturctorInvokeArgs;
+		this.isBlockContainer = true;
 	}
 
 	/**
