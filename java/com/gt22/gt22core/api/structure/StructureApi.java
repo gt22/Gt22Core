@@ -109,18 +109,11 @@ public class StructureApi
 		if (!StructureJson.getStructurelist().canWrite())
 		{
 			FileUtils.initFile(StructureJson.getStructurelist());
+			return true;
 		}
 		try
 		{
-			BufferedReader list = FileUtils.createReader(StructureJson.getStructurelist());
-			String temp = "";
-			int i = 0;
-			while ((temp = list.readLine()) != null)
-			{
-				i++;
-			}
-			list.close();
-			FileUtils.deleteLine(StructureJson.getStructurelist(), i);
+			FileUtils.deleteLine(StructureJson.getStructurelist(), name);
 		}
 		catch (IOException e)
 		{
