@@ -5,7 +5,6 @@ import net.minecraft.util.EnumChatFormatting;
 
 /**
  * Just {@link ChatComponentText} but with {@link EnumChatFormatting#GREEN} prefix
- * @author Игорь
  *
  */
 public class ChatComponentSucces extends ChatComponentText
