@@ -9,7 +9,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-
 import net.minecraft.crash.CrashReport;
 import net.minecraft.util.ReportedException;
 
@@ -111,10 +110,13 @@ public class FileUtils
 		writer.close();
 	}
 	
-	public static void deleteLine(File file, int linetodelete)
+	/** 
+	  	Deletes the line at specified position (File must exist)
+		@param file
+		@param linetodelete - line number of required line
+	 */
+	public static void deleteLine(File file, int linetodelete) throws IOException
 	{
-		try
-		{
 			BufferedReader br= createReader(file);
 			StringBuffer sb=new StringBuffer("");
 			int linenumber=1;
@@ -130,10 +132,23 @@ public class FileUtils
 			BufferedWriter fw = createWriter(file, false);
 			fw.write(sb.toString());
 			fw.close();
-		}
-		catch (Exception e)
+	}
+	
+	/**
+	 	Deletes the given line (File must exist)
+		@param file
+		@param line
+	 */
+	public static void deleteLine(File file, String line) throws IOException
+	{
+		BufferedReader list = FileUtils.createReader(file);
+		String temp = "";
+		int i = 0;
+		while ((temp = list.readLine()) != null && !temp.equals(line))
 		{
-			System.out.println("Something went horribly wrong: " + e.getMessage());
+			i++;
 		}
+		list.close();
+		deleteLine(file, i);
 	}
 }
