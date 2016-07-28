@@ -23,7 +23,23 @@ import cpw.mods.fml.common.Loader;
 
 public class StructureApi
 {		
-	
+	//Main json names
+	public static final String structure = "structure";
+	public static final String properties = "properties";
+	//Structure names
+	public static final String xOffset = "xOffset";
+	public static final String yOffset = "yOffset";
+	public static final String zOffset = "zOffset";
+	public static final String blockmeta = "meta";
+	public static final String blockname = "blockname";
+	//Properties names
+	public static final String weight = "weight";
+	public static final String name = "name";
+	public static final String target = "target";
+	public static final String usetarget = "usetarget";
+	public static final String miny = "miny";
+	public static final String maxy = "maxy";
+	public static final String world = "world";
 	/**
 	 * Create and write to file strcuture, this structure will not generate in normal ways. Designet to use form commands, but can be used in other cases
 	 * @param name - name of the structure
@@ -89,7 +105,7 @@ public class StructureApi
 	 */
 	public static JsonObject getStructureProperties(String name)
 	{
-		return getByName(name).getAsJsonObject("properties");
+		return getByName(name).getAsJsonObject(properties);
 	}
 
 	/**
@@ -188,7 +204,7 @@ public class StructureApi
 		ArrayList<String> ret = new ArrayList<String>();
 		for (JsonObject j : structures)
 		{
-			ret.add(j.getAsJsonObject("properties").get("name").getAsString());
+			ret.add(j.getAsJsonObject(properties).get(name).getAsString());
 		}
 		return ret;
 	}
@@ -210,7 +226,7 @@ public class StructureApi
 		ArrayList<Integer> weights = new ArrayList<Integer>();
 		for (JsonObject j : structures)
 		{
-			int weight = j.getAsJsonObject("properties").get("weight").getAsInt();
+			int weight = j.getAsJsonObject(properties).get(StructureApi.weight).getAsInt();
 			if (weight < 0)
 			{
 				structures.remove(j);
@@ -228,8 +244,8 @@ public class StructureApi
 		if (randweight >= midweight)
 		{
 			JsonObject structure = structures.get(Gt22MathHelper.getPositionOfClosest(weights, world.rand.nextInt(weights.get(weights.size() - 1) - world.rand.nextInt(weights.get(weights.size() - 2)))));
-			JsonObject properties = structure.getAsJsonObject("properties");
-			int miny = properties.get("miny").getAsInt(), maxy = properties.get("maxy").getAsInt(), ydiff = Gt22MathHelper.diff(miny, maxy);
+			JsonObject properties = structure.getAsJsonObject(StructureApi.properties);
+			int miny = properties.get(StructureApi.miny).getAsInt(), maxy = properties.get(StructureApi.maxy).getAsInt(), ydiff = Gt22MathHelper.diff(miny, maxy);
 			generateStructure(structure, world, x, miny + world.rand.nextInt(ydiff), z);
 		}
 	}
@@ -267,20 +283,20 @@ public class StructureApi
 	 */
 	public static void generateStructure(JsonObject json, World world, int x, int y, int z, boolean ignoreJsonTargetSetting, boolean ignoreJsonWorldSetting)
 	{
-		JsonObject properties = json.getAsJsonObject("properties");
-		if (ignoreJsonWorldSetting || world.provider.dimensionId != properties.get("world").getAsInt())
+		JsonObject properties = json.getAsJsonObject(StructureApi.properties);
+		if (ignoreJsonWorldSetting || world.provider.dimensionId != properties.get(StructureApi.world).getAsInt())
 		{
 			return;
 		}
-		Block target = Block.getBlockFromName(properties.get("target").getAsString());
-		boolean forcetarget = !ignoreJsonTargetSetting && properties.get("usetarget").getAsBoolean();
-		JsonArray str = json.getAsJsonArray("structure");
+		Block target = Block.getBlockFromName(properties.get(StructureApi.target).getAsString());
+		boolean forcetarget = !ignoreJsonTargetSetting && properties.get(StructureApi.usetarget).getAsBoolean();
+		JsonArray str = json.getAsJsonArray(structure);
 		if (forcetarget)
 		{
 			for (JsonElement e : str)
 			{
 				JsonObject o = e.getAsJsonObject();
-				if (world.getBlock(x + o.get("xOffset").getAsInt(), y + o.get("yOffset").getAsInt(), z + o.get("zOffset").getAsInt()) != target)
+				if (world.getBlock(x + o.get(xOffset).getAsInt(), y + o.get(yOffset).getAsInt(), z + o.get(zOffset).getAsInt()) != target)
 				{
 					return;
 				}
@@ -289,7 +305,7 @@ public class StructureApi
 		for (JsonElement e : str)
 		{
 			JsonObject o = e.getAsJsonObject();
-			world.setBlock(x + o.get("xOffset").getAsInt(), y + o.get("yOffset").getAsInt(), z + o.get("zOffset").getAsInt(), Block.getBlockFromName(o.get("blockname").getAsString().substring(5)), o.get("meta").getAsInt(), 3);
+			world.setBlock(x + o.get(xOffset).getAsInt(), y + o.get(yOffset).getAsInt(), z + o.get(zOffset).getAsInt(), Block.getBlockFromName(o.get(blockname).getAsString().substring(5)), o.get(blockmeta).getAsInt(), 3);
 		}
 	}
 	
@@ -370,25 +386,25 @@ public class StructureApi
 					for(int z = 0; z < zSize; z++)
 					{
 						JsonObject block = new JsonObject();
-						block.addProperty("xOffset", x);
-						block.addProperty("yOffset", y);
-						block.addProperty("zOffset", z);
-						block.addProperty("meta", structure == null ? 0 : structure[x][y][z] == null ? 0 : structure[x][y][z].getItem() == null ? 0 : structure[x][y][z].getItemDamage());
-						block.addProperty("blockname", structure == null || structure[x][y][z] == null || structure[x][y][z].getItem() == null ? Blocks.air.getUnlocalizedName() : structure[x][y][z].getItem().getUnlocalizedName());
+						block.addProperty(xOffset, x);
+						block.addProperty(yOffset, y);
+						block.addProperty(zOffset, z);
+						block.addProperty(blockmeta, structure == null ? 0 : structure[x][y][z] == null ? 0 : structure[x][y][z].getItem() == null ? 0 : structure[x][y][z].getItemDamage());
+						block.addProperty(blockname, structure == null || structure[x][y][z] == null || structure[x][y][z].getItem() == null ? Blocks.air.getUnlocalizedName() : structure[x][y][z].getItem().getUnlocalizedName());
 						structureJson.add(block);
 					}
 				}
 			}
 			JsonObject structureProperties = new JsonObject();
-			structureProperties.addProperty("weight", weight);
-			structureProperties.addProperty("name", name);
-			structureProperties.addProperty("target", target);
-			structureProperties.addProperty("usetarget", usetarget);
-			structureProperties.addProperty("miny", miny);
-			structureProperties.addProperty("maxy", maxy);
-			structureProperties.addProperty("world", worldid);
-			json.add("structure", structureJson);
-			json.add("properties", structureProperties);
+			structureProperties.addProperty(StructureApi.weight, weight);
+			structureProperties.addProperty(StructureApi.name, name);
+			structureProperties.addProperty(StructureApi.target, target);
+			structureProperties.addProperty(StructureApi.usetarget, usetarget);
+			structureProperties.addProperty(StructureApi.miny, miny);
+			structureProperties.addProperty(StructureApi.maxy, maxy);
+			structureProperties.addProperty(StructureApi.world, worldid);
+			json.add(StructureApi.structure, structureJson);
+			json.add(properties, structureProperties);
 		}
 		
 		private void generateStructure(World world)
