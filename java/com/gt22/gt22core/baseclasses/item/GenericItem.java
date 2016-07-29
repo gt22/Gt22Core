@@ -28,6 +28,7 @@ public class GenericItem extends ItemBase
 	{
 		super("", mod, creativetabid);
 		modid = mod.getModid();
+		setHasSubtypes(true);
 	}
 	
 	/**
