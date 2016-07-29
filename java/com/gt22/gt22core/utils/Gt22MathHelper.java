@@ -1,7 +1,6 @@
 package com.gt22.gt22core.utils;
 
-import java.util.ArrayList;
-
+import java.util.List;
 import net.minecraft.util.MathHelper;
 
 /**
@@ -26,14 +25,16 @@ public class Gt22MathHelper
 		return a;
 	}
 	
-	public static int getPositionOfClosest(ArrayList<Integer> searchin, int value)
+	/**
+	 	Can be used to get position of closest int in list to passed value
+	 */
+	public static int getPositionOfClosest(List<Integer> searchin, int value)
 	{
 		if(searchin.size() == 0)
 		{
 			return -1;
 		}
-		int closestnum = searchin.get(0);
-		int closestdiff = diff(closestnum, value);
+		int closestdiff = diff(0, value);
 		int closestpos = 0;
 		for(int pos = 0; pos < searchin.size(); pos++)
 		{
@@ -41,7 +42,6 @@ public class Gt22MathHelper
 			int diff = diff(i, value);
 			if(diff < closestdiff)
 			{
-				closestnum = i;
 				closestdiff = diff;
 				closestpos = pos;
 			}
