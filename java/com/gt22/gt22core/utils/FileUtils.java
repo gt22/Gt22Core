@@ -44,19 +44,12 @@ public class FileUtils
 	 * Crates file if it not created
 	 * @param file
 	 */
-	public static void initFile(File file)
+	public static void initFile(File file) throws IOException
 	{
 		if(!file.canWrite())
 		{
-			try
-			{
 				file.getParentFile().mkdirs();
 				file.createNewFile();
-			}
-			catch(IOException e)
-			{
-				throw new ReportedException(CrashReport.makeCrashReport(e, "Unable to generate structure config"));
-			}
 		}
 	}
 	
