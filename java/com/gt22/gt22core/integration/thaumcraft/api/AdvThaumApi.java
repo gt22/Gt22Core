@@ -15,6 +15,7 @@ import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.wands.ItemFocusBasic;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
@@ -23,6 +24,11 @@ public class AdvThaumApi
 
 	private static Class<?> wandclass;
 	private static SimpleNetworkWrapper instance;
+	
+	private static void crashGame(Exception e)
+	{
+		FMLCommonHandler.instance().getSidedDelegate().haltGame("Some mode trying to use AdvThaumApi, but thaumcraft is not installed, contact mod author or install thaumcraft", e);
+	}
 	
 	/**
 	 * Used interanly.
@@ -36,7 +42,7 @@ public class AdvThaumApi
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			crashGame(e);
 		}
 	}
 	/**
@@ -79,7 +85,7 @@ public class AdvThaumApi
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			crashGame(e);
 		}
 		return null;
 	}
@@ -104,7 +110,7 @@ public class AdvThaumApi
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			crashGame(e);
 		}
 		return false;
 	}
@@ -121,8 +127,7 @@ public class AdvThaumApi
 		}
 		catch (Exception e)
 		{
-			System.out.println("Unable to play warp effects");
-			e.printStackTrace();
+			crashGame(e);
 		}
 	}
 
@@ -142,8 +147,7 @@ public class AdvThaumApi
 		}
 		catch (Exception e)
 		{
-			System.out.println("Unable to give research");
-			e.printStackTrace();
+			crashGame(e);
 		}
 
 	}
@@ -161,8 +165,7 @@ public class AdvThaumApi
 		}
 		catch (Exception e)
 		{
-			System.out.println("Unable to invoke storeAllVis method from thaumcraft");
-			e.printStackTrace();
+			crashGame(e);
 		}
 	}
 
@@ -180,9 +183,7 @@ public class AdvThaumApi
 		}
 		catch (Exception e)
 		{
-			System.out.println("Unable to invoke getVis method from thaumcraft");
-			e.printStackTrace();
-			Minecraft.getMinecraft().shutdown();
+			crashGame(e);
 		}
 		return 0;
 	}
@@ -203,9 +204,7 @@ public class AdvThaumApi
 		}
 		catch (Exception e)
 		{
-			System.out.println("Unable to invoke addVis method from thaumcraft");
-			e.printStackTrace();
-			Minecraft.getMinecraft().shutdown();
+			crashGame(e);
 		}
 		return 0;
 	}
@@ -223,10 +222,9 @@ public class AdvThaumApi
 		}
 		catch (Exception e)
 		{
-			System.out.println("Unable to invoke getFocusItem method from thaumcraft");
-			e.printStackTrace();
-			return null;
+			crashGame(e);
 		}
+		return null;
 	}
 
 	/**
@@ -242,10 +240,9 @@ public class AdvThaumApi
 		}
 		catch (Exception e)
 		{
-			System.out.println("Unable to invoke getMaxVis method from thaumcraft");
-			e.printStackTrace();
-			return 0;
+			crashGame(e);
 		}
+		return 0;
 	}
 
 	/**
@@ -261,9 +258,7 @@ public class AdvThaumApi
 		}
 		catch (Exception e)
 		{
-			System.out.println("Unable to invoke setCooldown method from thaumcraft");
-			e.printStackTrace();
-			Minecraft.getMinecraft().shutdown();
+			crashGame(e);
 		}
 	}
 
@@ -287,9 +282,7 @@ public class AdvThaumApi
 		}
 		catch (Exception e)
 		{
-			System.out.println("Unable to invoke breakFurthestBlock method from thaumcraft");
-			e.printStackTrace();
-			Minecraft.getMinecraft().shutdown();
+			crashGame(e);
 		}
 
 	}
