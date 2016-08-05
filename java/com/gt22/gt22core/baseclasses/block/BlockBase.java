@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -16,6 +17,7 @@ import com.gt22.gt22core.utils.ToolClass;
 
 public class BlockBase extends Block
 {
+	public ItemBlock itemblock;
 	public String textureName;
 	/**
 	 * Texture must be png file with name of block and placed in assets/yourmodid/textures/blocks
@@ -82,6 +84,10 @@ public class BlockBase extends Block
 		this.textureName = textureName;
 	}
 	
+	public void setItemblock(ItemBlock itemblock) {
+		this.itemblock = itemblock;
+	}
+	
 	private void registerModelMeta(Block b, int meta)
 	{
 		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(b), meta, new ModelResourceLocation(textureName, "inventory"));
@@ -103,7 +109,7 @@ public class BlockBase extends Block
 	}
 	
 	public void register() {
-		GameRegistry.registerBlock(this, getUnlocalizedName().substring(5));
+		GameRegistry.registerBlock(this, itemblock.getClass(), getUnlocalizedName().substring(5));
 		registerModel(this);
 	}
 
