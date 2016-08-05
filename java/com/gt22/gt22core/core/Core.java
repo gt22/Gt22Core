@@ -1,15 +1,15 @@
 package com.gt22.gt22core.core;
 
-import com.gt22.gt22core.command.CommandHandler;
-import com.gt22.gt22core.integration.thaumcraft.api.AdvThaumApi;
+import net.minecraft.command.CommandHandler;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+
 import com.gt22.gt22core.proxy.CommonProxy;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 
 @Mod(modid = Core.modid, name = Core.modid, version = Core.version, dependencies = "after:Thaumcraft")
@@ -24,7 +24,6 @@ public class Core
 	@EventHandler
 	public static void preInit(FMLPreInitializationEvent e)
 	{
-		AdvThaumApi.init();
 		proxy.preInit(e);
 	}
 	
@@ -38,12 +37,6 @@ public class Core
 	public static void postInit(FMLPostInitializationEvent e)
 	{
 		proxy.postInit(e);
-	}
-	
-	@EventHandler
-	public static void onServerStarted(FMLServerStartingEvent e)
-	{
-		e.registerServerCommand(new CommandHandler());
 	}
 	
 }

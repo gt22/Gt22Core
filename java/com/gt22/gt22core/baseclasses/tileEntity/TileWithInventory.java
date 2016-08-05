@@ -9,6 +9,8 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IChatComponent;
 
 /**
  * Just a tile entity that implements iinvetory and contains some methods for it
@@ -83,7 +85,7 @@ public class TileWithInventory extends TileEntity implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int index)
+	public ItemStack removeStackFromSlot(int index)
 	{
 		ItemStack stack = this.getStackInSlot(index);
 		this.setInventorySlotContents(index, null);
@@ -107,13 +109,13 @@ public class TileWithInventory extends TileEntity implements IInventory
 	}
 
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
 		return "TilWithInv";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public boolean hasCustomName()
 	{
 		return false;
 	}
@@ -127,17 +129,17 @@ public class TileWithInventory extends TileEntity implements IInventory
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player)
 	{
-		return player.getDistanceSq(xCoord, yCoord, zCoord) <= 64;
+		return player.getDistanceSq(pos) <= 64;
 	}
 
 	@Override
-	public void openInventory()
+	public void openInventory(EntityPlayer p)
 	{
 
 	}
 
 	@Override
-	public void closeInventory()
+	public void closeInventory(EntityPlayer p)
 	{
 
 	}
@@ -218,13 +220,30 @@ public class TileWithInventory extends TileEntity implements IInventory
 		}
 		NBTTagCompound sync = new NBTTagCompound();
 		writeSyncNbt(sync);
-		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, sync);
+		return new S35PacketUpdateTileEntity(pos, 1, sync);
 	}
 
 	@Override
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
 	{
 		if(syncinv)
-		readSyncNbt(pkt.func_148857_g());
+		readSyncNbt(pkt.getNbtCompound());
 	}
+
+	@Override
+	public IChatComponent getDisplayName() {
+		return new ChatComponentText("TileWithInventory");
+	}
+
+	@Override
+	public int getField(int id) {return 0;}
+
+	@Override
+	public void setField(int id, int value) {}
+
+	@Override
+	public int getFieldCount() {return 0;}
+
+	@Override
+	public void clear() {}
 }

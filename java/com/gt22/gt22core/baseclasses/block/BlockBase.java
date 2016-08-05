@@ -1,13 +1,22 @@
 package com.gt22.gt22core.baseclasses.block;
 
+import java.util.ArrayList;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import com.gt22.gt22core.interfaces.IMod;
 import com.gt22.gt22core.utils.ToolClass;
 
 public class BlockBase extends Block
 {
+	public String textureName;
 	/**
 	 * Texture must be png file with name of block and placed in assets/yourmodid/textures/blocks
 	 * @param mat - Material
@@ -30,8 +39,8 @@ public class BlockBase extends Block
 		{
 			setCreativeTab(null);
 		}
-		setBlockName(unlocName);
-		setBlockTextureName(mod.getModid() + ":" + unlocName);
+		setUnlocalizedName(unlocName);
+		setTextureName(mod.getModid() + ":" + unlocName);
 		setHardness(hardness);
 		setResistance(resistance);
 		if(tool != "none")
@@ -68,7 +77,34 @@ public class BlockBase extends Block
 	{
 		this(mat, hardness, resistance, unlocName, mod, 0, tool, harvestlevel);
 	}
+
+	public void setTextureName(String textureName) {
+		this.textureName = textureName;
+	}
 	
+	private void registerModelMeta(Block b, int meta)
+	{
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(b), meta, new ModelResourceLocation(textureName, "inventory"));
+	}
 	
+	private void registerModel(Block block)
+	{
+		if(!Item.getItemFromBlock(block).getHasSubtypes())
+		{
+			registerModelMeta(block, 0);
+			return;
+		}
+		ArrayList<ItemStack> items = new ArrayList<ItemStack>();
+		block.getSubBlocks(Item.getItemFromBlock(block), CreativeTabs.tabAllSearch, items);
+		for(int i = 0; i < items.size(); i++)
+		{
+			registerModelMeta(block, i);
+		}
+	}
+	
+	public void register() {
+		GameRegistry.registerBlock(this, getUnlocalizedName().substring(5));
+		registerModel(this);
+	}
 
 }
