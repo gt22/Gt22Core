@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import com.gt22.gt22core.utils.MiscUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
@@ -27,7 +28,7 @@ public class AdvThaumApi
 	
 	private static void crashGame(Exception e)
 	{
-		FMLCommonHandler.instance().getSidedDelegate().haltGame("Some mode trying to use AdvThaumApi, but thaumcraft is not installed, contact mod author or install thaumcraft", e);
+		MiscUtils.crashGame("Some mode trying to use AdvThaumApi, but thaumcraft is not installed, contact mod author or install thaumcraft", e);
 	}
 	
 	/**
