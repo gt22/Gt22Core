@@ -32,8 +32,20 @@ public class ResourceLocParser
 		else
 		{
 			modid = rl.substring(0, rl.indexOf(':'));
-			path = rl.substring(pos);
+			path = rl.substring(pos + 1);
 		}
-		return parse(modid, defoultpath + "/" + path);
+		return parse(modid, path, defoultpath);
+	}
+	
+	/**
+	 	Just creates resource location from modid and defoultpath + path.
+		@param modid
+		@param path
+		@param defoultpath
+		@return
+	 */
+	public static ResourceLocation parse(String modid, String path, String defoultpath)
+	{
+		return new ResourceLocation(modid, defoultpath + path);
 	}
 }
