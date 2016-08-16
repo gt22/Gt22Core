@@ -124,7 +124,6 @@ public class StructureApi
 		file.delete();
 		if (!StructureJson.getStructurelist().canWrite())
 		{
-			FileUtils.initFile(StructureJson.getStructurelist());
 			return true;
 		}
 		try
@@ -161,12 +160,9 @@ public class StructureApi
 	private static ArrayList<JsonObject> getStructures()
 	{
 		ArrayList<JsonObject> ret = new ArrayList<JsonObject>();
-		if (!StructureJson.getStructurelist().canWrite())
-		{
-			FileUtils.initFile(StructureJson.getStructurelist());
-		}
 		try
 		{
+			FileUtils.initFile(StructureJson.getStructurelist());
 			BufferedReader list = FileUtils.createReader(StructureJson.getStructurelist());
 			String temp = "";
 			int i = 0;
