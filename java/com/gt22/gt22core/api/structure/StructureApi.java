@@ -423,9 +423,9 @@ public class StructureApi
 		
 		private void write()
 		{
-			FileUtils.initFile(file);	
 			try
 			{
+				FileUtils.initFile(file);
 				FileOutputStream jsonfile = new FileOutputStream(file);
 				jsonfile.write(json.toString().getBytes());
 				jsonfile.close();
