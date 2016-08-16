@@ -182,8 +182,9 @@ public class TileWithInventory extends TileEntity implements IInventory
 		}
 	}
 
-	private void writeSyncNbt(NBTTagCompound nbt)
+	protected NBTTagCompound getSyncNbt()
 	{
+		NBTTagCompound nbt = new NBTTagCompound();
 		NBTTagList list = new NBTTagList();
 		for (int i = 0; i < this.getSizeInventory(); ++i)
 		{
@@ -196,9 +197,10 @@ public class TileWithInventory extends TileEntity implements IInventory
 			}
 		}
 		nbt.setTag("Items", list);
+		return nbt;
 	}
 
-	private void readSyncNbt(NBTTagCompound nbt)
+	protected void readSyncNBT(NBTTagCompound nbt)
 	{
 		NBTTagList list = nbt.getTagList("Items", 10);
 		for (int i = 0; i < list.tagCount(); ++i)
@@ -216,15 +218,13 @@ public class TileWithInventory extends TileEntity implements IInventory
 		{
 			return null;
 		}
-		NBTTagCompound sync = new NBTTagCompound();
-		writeSyncNbt(sync);
-		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, sync);
+		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, getSyncNbt());
 	}
 
 	@Override
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
 	{
 		if(syncinv)
-		readSyncNbt(pkt.func_148857_g());
+		readSyncNBT(pkt.func_148857_g());
 	}
 }

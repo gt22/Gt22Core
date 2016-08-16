@@ -1,34 +1,32 @@
 package com.gt22.gt22core.baseclasses.tileEntity;
 
-import net.minecraft.nbt.NBTBase;
+import com.gt22.gt22core.baseclasses.other.FluidTankBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-import com.gt22.gt22core.baseclasses.other.FluidTankBase;
 
-public class TileWithFluid extends TileEntity implements IFluidHandler
+public class TileWithFluidAndInv extends TileWithInventory implements IFluidHandler
 {
 	protected FluidTankBase tank;
 	protected boolean syncfluid;
-	public TileWithFluid(int capacity, boolean syncfluid)
+	public TileWithFluidAndInv(int slots, int capacity, boolean syncinv, boolean syncfluid)
 	{
+		super(slots, syncinv);
 		this.syncfluid = syncfluid;
 		tank = new FluidTankBase(capacity);
 	}
-	
-	public TileWithFluid(int capacity)
-	{
-		this(capacity, false);
-	}
 
+	public TileWithFluidAndInv(int slots, int capacity)
+	{
+		this(slots, capacity, false, false);
+	}
+	
 	public FluidTankBase getTank(ForgeDirection from)
 	{
 		return tank;
@@ -80,6 +78,7 @@ public class TileWithFluid extends TileEntity implements IFluidHandler
 	public void writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
+		if(syncfluid)
 		nbt.setTag("tank", getSyncNbt());
 	}
 	
@@ -87,33 +86,25 @@ public class TileWithFluid extends TileEntity implements IFluidHandler
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
+		if(syncfluid)
 		readSyncNBT(nbt.getCompoundTag("tank"));
 	}
 	
+	@Override
 	protected NBTTagCompound getSyncNbt()
 	{
-		NBTTagCompound ret = new NBTTagCompound();
+		NBTTagCompound tanktag = new NBTTagCompound();
 		if(tank.getFluid() != null)
-		tank.getFluid().writeToNBT(ret);
+		tank.getFluid().writeToNBT(tanktag);
+		NBTTagCompound ret = super.getSyncNbt();
+		ret.setTag("tank", tanktag);
 		return ret;
 	}
 	
+	@Override
 	protected void readSyncNBT(NBTTagCompound nbt)
 	{
-		tank.loadFluid(nbt);
-	}
-	
-	@Override
-	public Packet getDescriptionPacket()
-	{
-		
-		return syncfluid ? new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, getSyncNbt()) : null;
-	}
-	
-	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
-	{
-		if(syncfluid)
-		readSyncNBT(pkt.func_148857_g());
+		super.readSyncNBT(nbt);
+		tank.loadFluid(nbt.getCompoundTag("tank"));
 	}
 }
