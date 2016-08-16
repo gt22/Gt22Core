@@ -12,11 +12,12 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.IFluidTank;
 import com.gt22.gt22core.baseclasses.other.FluidTankBase;
 
 public class TileWithFluid extends TileEntity implements IFluidHandler
 {
-	protected FluidTankBase tank;
+	protected IFluidTank tank;
 	protected boolean syncfluid;
 	public TileWithFluid(int capacity, boolean syncfluid)
 	{
@@ -29,7 +30,7 @@ public class TileWithFluid extends TileEntity implements IFluidHandler
 		this(capacity, false);
 	}
 
-	public FluidTankBase getTank(ForgeDirection from)
+	public IFluidTank getTank(ForgeDirection from)
 	{
 		return tank;
 	}
@@ -100,7 +101,7 @@ public class TileWithFluid extends TileEntity implements IFluidHandler
 	
 	protected void readSyncNBT(NBTTagCompound nbt)
 	{
-		tank.loadFluid(nbt);
+		tank.fill(FluidStack.loadFluidStackFromNBT(nbt), true);
 	}
 	
 	@Override

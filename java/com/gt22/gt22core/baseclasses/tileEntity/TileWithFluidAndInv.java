@@ -10,10 +10,11 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.IFluidTank;
 
 public class TileWithFluidAndInv extends TileWithInventory implements IFluidHandler
 {
-	protected FluidTankBase tank;
+	protected IFluidTank tank;
 	protected boolean syncfluid;
 	public TileWithFluidAndInv(int slots, int capacity, boolean syncinv, boolean syncfluid)
 	{
@@ -27,7 +28,7 @@ public class TileWithFluidAndInv extends TileWithInventory implements IFluidHand
 		this(slots, capacity, false, false);
 	}
 	
-	public FluidTankBase getTank(ForgeDirection from)
+	public IFluidTank getTank(ForgeDirection from)
 	{
 		return tank;
 	}
@@ -105,6 +106,6 @@ public class TileWithFluidAndInv extends TileWithInventory implements IFluidHand
 	protected void readSyncNBT(NBTTagCompound nbt)
 	{
 		super.readSyncNBT(nbt);
-		tank.loadFluid(nbt.getCompoundTag("tank"));
+		tank.fill(FluidStack.loadFluidStackFromNBT(nbt), true);
 	}
 }
