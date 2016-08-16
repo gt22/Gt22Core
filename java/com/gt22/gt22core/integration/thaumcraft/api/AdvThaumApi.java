@@ -25,7 +25,7 @@ public class AdvThaumApi
 
 	private static Class<?> wandclass;
 	private static SimpleNetworkWrapper instance;
-	
+	private static Object proxy;
 	private static void crashGame(Exception e)
 	{
 		MiscUtils.crashGame("Some mode trying to use AdvThaumApi, but thaumcraft is not installed, contact mod author or install thaumcraft", e);
@@ -40,6 +40,7 @@ public class AdvThaumApi
 		{
 			wandclass = Class.forName("thaumcraft.common.items.wands.ItemWandCasting");
 			instance = (SimpleNetworkWrapper) Class.forName("thaumcraft.common.lib.network.PacketHandler").getField("INSTANCE").get(null);
+			proxy = Class.forName("thaumcraft.common.Thaumcraft").getField("proxy").get(null);
 		}
 		catch (Exception e)
 		{
@@ -102,10 +103,9 @@ public class AdvThaumApi
 	{
 		try
 		{
-			Object proxy = Class.forName("thaumcraft.common.Thaumcraft").getField("proxy").get(null);
-			Constructor<? extends IMessage> conspap = ((Class<? extends IMessage>) Class.forName("thaumcraft.common.lib.network.playerdata.PacketAspectPool")).getConstructor(String.class, Short.class, Short.class);
+			
 			AspectList al = ThaumcraftApiHelper.getDiscoveredAspects(player.getCommandSenderName());
-			instance.sendTo(conspap.newInstance(aspect.getTag(), Short.valueOf((short) 1), Short.valueOf(al != null ? (short) al.getAmount(aspect) : 0)), (EntityPlayerMP) player);
+			instance.sendTo(((Constructor<? extends IMessage>) Class.forName("thaumcraft.common.lib.network.playerdata.PacketAspectPool").getConstructor(String.class, Short.class, Short.class)).newInstance(aspect.getTag(), Short.valueOf((short) 1), Short.valueOf(al != null ? (short) al.getAmount(aspect) : 0)), (EntityPlayerMP) player);
 			Object pk = proxy.getClass().getField("playerKnowledge").get(proxy);
 			return (boolean) pk.getClass().getMethod("addAspectPool", String.class, Aspect.class, short.class).invoke(pk, player.getCommandSenderName(), aspect, amount);
 		}
@@ -124,7 +124,7 @@ public class AdvThaumApi
 	{
 		try
 		{
-			((SimpleNetworkWrapper) Class.forName("thaumcraft.common.lib.network.PacketHandler").getField("INSTANCE").get(null)).sendTo(((Constructor<? extends IMessage>) Class.forName("thaumcraft.common.lib.network.misc.PacketMiscEvent").getConstructor(short.class)).newInstance((short) 0), (EntityPlayerMP) player);
+			instance.sendTo(((Constructor<? extends IMessage>) Class.forName("thaumcraft.common.lib.network.misc.PacketMiscEvent").getConstructor(short.class)).newInstance((short) 0), (EntityPlayerMP) player);
 		}
 		catch (Exception e)
 		{
@@ -142,7 +142,6 @@ public class AdvThaumApi
 		try
 		{
 			instance.sendTo(((Class<? extends IMessage>) Class.forName("thaumcraft.common.lib.network.playerdata.PacketResearchComplete")).getConstructor(String.class).newInstance(research), (EntityPlayerMP) player);
-			Object proxy = Class.forName("thaumcraft.common.Thaumcraft").getField("proxy").get(null);
 			Object resm = proxy.getClass().getField("researchManager").get(proxy);
 			resm.getClass().getMethod("completeResearch", EntityPlayerMP.class, String.class).invoke(resm, (EntityPlayerMP) player, research);
 		}
