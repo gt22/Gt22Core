@@ -16,7 +16,7 @@ import com.gt22.gt22core.proxy.CommonProxy;
 @Mod(modid = Core.modid, name = Core.modid, version = Core.version, dependencies = "after:Thaumcraft")
 public class Core
 {
-	public static final int majorversion = 1, minorversion = 0, mcversion = 1710, bugfixversion = 0;
+	public static final int majorversion = 1, minorversion = 1, mcversion = 1102, bugfixversion = 0;
 	public static final String modid = "gt22core", name = "Gt22 core", version = majorversion + "." + minorversion + "." + mcversion + "." + bugfixversion;
 	private static boolean isDev;
 	@SidedProxy(clientSide = "com.gt22.gt22core.proxy.ClientProxy", serverSide = "com.gt22.gt22core.proxy.ClientProxy")
