@@ -7,10 +7,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
+
 
 /**
  * Just a tile entity that implements iinvetory and contains some methods for it
@@ -151,7 +151,7 @@ public class TileWithInventory extends TileEntity implements IInventory
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbt)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
 
@@ -167,7 +167,7 @@ public class TileWithInventory extends TileEntity implements IInventory
 			}
 		}
 		nbt.setTag("Items", list);
-
+		return nbt;
 	}
 
 	@Override
@@ -212,7 +212,7 @@ public class TileWithInventory extends TileEntity implements IInventory
 	}
 
 	@Override
-	public Packet getDescriptionPacket()
+	public SPacketUpdateTileEntity getUpdatePacket()
 	{
 		if(!syncinv)
 		{
@@ -220,19 +220,13 @@ public class TileWithInventory extends TileEntity implements IInventory
 		}
 		NBTTagCompound sync = new NBTTagCompound();
 		writeSyncNbt(sync);
-		return new S35PacketUpdateTileEntity(pos, 1, sync);
+		return new SPacketUpdateTileEntity(pos, 1, sync);
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
-	{
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
 		if(syncinv)
-		readSyncNbt(pkt.getNbtCompound());
-	}
-
-	@Override
-	public IChatComponent getDisplayName() {
-		return new ChatComponentText("TileWithInventory");
+			readSyncNbt(pkt.getNbtCompound());
 	}
 
 	@Override

@@ -2,14 +2,14 @@ package com.gt22.gt22core.baseclasses.item;
 
 import java.util.ArrayList;
 
+import com.gt22.gt22core.interfaces.IMod;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-
-import com.gt22.gt22core.interfaces.IMod;
  
 public class ItemBase extends Item
 {
@@ -57,7 +57,7 @@ public class ItemBase extends Item
 			return;
 		}
 		ArrayList<ItemStack> items = new ArrayList<ItemStack>();
-		item.getSubItems(item, CreativeTabs.tabAllSearch, items);
+		item.getSubItems(item, CreativeTabs.SEARCH, items);
 		for(int i = 0; i < items.size(); i++)
 		{
 			registerTextureMeta(item, i);

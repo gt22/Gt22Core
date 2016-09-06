@@ -1,5 +1,8 @@
 package com.gt22.gt22core.proxy;
 
+import com.gt22.gt22core.texturegen.TextureGenRegistry;
+
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -18,6 +21,9 @@ public class CommonProxy
 	
 	public void postInit(FMLPostInitializationEvent e)
 	{
-		
+		if((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"))
+		{
+			TextureGenRegistry.generateTextures();
+		}
 	}
 }

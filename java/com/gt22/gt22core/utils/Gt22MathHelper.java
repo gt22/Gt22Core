@@ -1,7 +1,6 @@
 package com.gt22.gt22core.utils;
 
 import java.util.List;
-import net.minecraft.util.MathHelper;
 
 /**
  * Some functions that i didn'd fount in {@link Math} or {@link MathHelper}

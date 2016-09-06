@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -101,7 +101,7 @@ public class BlockBase extends Block
 			return;
 		}
 		ArrayList<ItemStack> items = new ArrayList<ItemStack>();
-		block.getSubBlocks(Item.getItemFromBlock(block), CreativeTabs.tabAllSearch, items);
+		block.getSubBlocks(Item.getItemFromBlock(block), CreativeTabs.SEARCH, items);
 		for(int i = 0; i < items.size(); i++)
 		{
 			registerModelMeta(block, i);
