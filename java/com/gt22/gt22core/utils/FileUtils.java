@@ -26,7 +26,7 @@ public class FileUtils
 	/**
 	 * Create new BufferredWriter for file
 	 */
-	public static BufferedWriter createWriter(File file) throws FileNotFoundException
+	public static BufferedWriter createWriter(File file) throws IOException
 	{
 		return createWriter(file, true);
 	}
@@ -35,8 +35,9 @@ public class FileUtils
 	 * Create new BufferredWriter for file
 	 * @param append file, or rewrite it using function wirte();
 	 */
-	public static BufferedWriter createWriter(File file, boolean append) throws FileNotFoundException
+	public static BufferedWriter createWriter(File file, boolean append) throws IOException
 	{
+		initFile(file);
 		return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, append)));
 	}
 	
