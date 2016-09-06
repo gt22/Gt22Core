@@ -154,7 +154,7 @@ public class TileWithInventory extends TileEntity implements IInventory
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
-		writeSyncNbt(nbt);
+		writeSyncNbt(getTileData());
 		return nbt;
 	}
 
@@ -162,7 +162,7 @@ public class TileWithInventory extends TileEntity implements IInventory
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-		readSyncNbt(nbt);
+		readSyncNbt(getTileData());
 	}
 
 	protected void writeSyncNbt(NBTTagCompound nbt)
