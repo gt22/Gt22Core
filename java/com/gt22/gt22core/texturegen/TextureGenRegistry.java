@@ -38,7 +38,7 @@ public class TextureGenRegistry {
 		}
 	}
 
-	private static final List<TextureStorage> registries = Core.isDev() ? new ArrayList<TextureStorage>() : null;
+	private static List<TextureStorage> registries = Core.isDev() ? new ArrayList<TextureStorage>() : null;
 
 	/**
 	 * Use this method to add class containing Items/Blocks field (Like
@@ -89,6 +89,7 @@ public class TextureGenRegistry {
 				}
 			}
 		}
+		registries = null;
 	}
 
 	private static void createGeneric(String modid) {
