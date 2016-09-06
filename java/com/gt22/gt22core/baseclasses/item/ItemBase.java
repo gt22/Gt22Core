@@ -13,7 +13,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  
 public class ItemBase extends Item
 {
-	public String textureName;
 	/**
 	 * 
 	 * 
@@ -24,8 +23,8 @@ public class ItemBase extends Item
 	public ItemBase(String unlocName, IMod mod, int creativetabid)
 	{
 		setUnlocalizedName(unlocName);
-		setTextureName(mod.getModid() + ":" + unlocName);
 		setCreativeTab(mod.getCreativeTabs()[creativetabid]);
+		setRegistryName(mod.getModid(), unlocName);
 	}
 	
 	/**
@@ -39,13 +38,9 @@ public class ItemBase extends Item
 		this(unlocName, mod, 0);
 	}
 	
-	public void setTextureName(String textureName) {
-		this.textureName = textureName;
-	}
-	
 	public void register()
 	{
-		GameRegistry.registerItem(this, getUnlocalizedName().substring(5));
+		GameRegistry.register(this);
 		registerTexture(this);
 	}
 	
@@ -66,6 +61,6 @@ public class ItemBase extends Item
 	
 	private void registerTextureMeta(Item i, int meta)
 	{
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(i, meta, new ModelResourceLocation(textureName, "inventory"));
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(i, meta, new ModelResourceLocation(getRegistryName().getResourceDomain(), "inventory"));
 	}
 }

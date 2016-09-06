@@ -18,7 +18,6 @@ import com.gt22.gt22core.utils.ToolClass;
 public class BlockBase extends Block
 {
 	public ItemBlock itemblock;
-	public String textureName;
 	/**
 	 * Texture must be png file with name of block and placed in assets/yourmodid/textures/blocks
 	 * @param mat - Material
@@ -42,7 +41,7 @@ public class BlockBase extends Block
 			setCreativeTab(null);
 		}
 		setUnlocalizedName(unlocName);
-		setTextureName(mod.getModid() + ":" + unlocName);
+		setRegistryName(mod.getModid(), unlocName);
 		setHardness(hardness);
 		setResistance(resistance);
 		if(tool != "none")
@@ -79,10 +78,6 @@ public class BlockBase extends Block
 	{
 		this(mat, hardness, resistance, unlocName, mod, 0, tool, harvestlevel);
 	}
-
-	public void setTextureName(String textureName) {
-		this.textureName = textureName;
-	}
 	
 	public void setItemblock(ItemBlock itemblock) {
 		this.itemblock = itemblock;
@@ -90,7 +85,7 @@ public class BlockBase extends Block
 	
 	private void registerModelMeta(Block b, int meta)
 	{
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(b), meta, new ModelResourceLocation(textureName, "inventory"));
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(b), meta, new ModelResourceLocation(getRegistryName().getResourceDomain(), "inventory"));
 	}
 	
 	private void registerModel(Block block)
@@ -109,7 +104,7 @@ public class BlockBase extends Block
 	}
 	
 	public void register() {
-		GameRegistry.registerBlock(this, itemblock.getClass(), getUnlocalizedName().substring(5));
+		GameRegistry.registerBlock(this, itemblock.getClass());
 		registerModel(this);
 	}
 
