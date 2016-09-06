@@ -203,6 +203,7 @@ public class TextureGenRegistry {
 			return String.format("{\n"
 					+ "\"parent\": \"block/cube\",\n"
 					+ "\"textures\": {\n"
+						+ "\"particle\": \"%s\",\n"
 						+ "\"up\": \"%s\",\n"
 						+ "\"down\": \"%s\",\n"
 						+ "\"north\": \"%s\",\n"
@@ -211,7 +212,7 @@ public class TextureGenRegistry {
 						+ "\"west\": \"%s\"\n"
 					+ "}\n"
 				+ "}",
-				bl.getTexture(EnumFacing.UP), bl.getTexture(EnumFacing.DOWN), bl.getTexture(EnumFacing.NORTH), bl.getTexture(EnumFacing.EAST), bl.getTexture(EnumFacing.SOUTH), bl.getTexture(EnumFacing.WEST));
+				bl.getParticleTexture(), bl.getTexture(EnumFacing.UP), bl.getTexture(EnumFacing.DOWN), bl.getTexture(EnumFacing.NORTH), bl.getTexture(EnumFacing.EAST), bl.getTexture(EnumFacing.SOUTH), bl.getTexture(EnumFacing.WEST));
 		}
 			return String.format("{\n"
 									+ "\"parent\": \"block/cube_all\",\n"
