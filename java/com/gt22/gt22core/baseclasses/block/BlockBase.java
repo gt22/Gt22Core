@@ -83,12 +83,12 @@ public class BlockBase extends Block
 		this.itemblock = itemblock;
 	}
 	
-	private void registerModelMeta(Block b, int meta)
+	protected void registerModelMeta(Block b, int meta)
 	{
 		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(b), meta, new ModelResourceLocation(getRegistryName().getResourceDomain(), "inventory"));
 	}
 	
-	private void registerModel(Block block)
+	protected void registerModel(Block block)
 	{
 		if(!Item.getItemFromBlock(block).getHasSubtypes())
 		{

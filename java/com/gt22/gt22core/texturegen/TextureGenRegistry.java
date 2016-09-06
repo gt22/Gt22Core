@@ -9,15 +9,23 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.Level;
+
+import com.gt22.gt22core.core.Core;
 import com.gt22.gt22core.texturegen.ICustomJson.JsonType;
 import com.gt22.gt22core.utils.FileUtils;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.crash.CrashReport;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ReportedException;
+import net.minecraftforge.fml.common.FMLLog;
 
 public class TextureGenRegistry {
 	private static class TextureStorage {
@@ -30,7 +38,7 @@ public class TextureGenRegistry {
 		}
 	}
 
-	private static final List<TextureStorage> registries = new ArrayList<TextureStorage>();
+	private static final List<TextureStorage> registries = Core.isDev() ? new ArrayList<TextureStorage>() : null;
 
 	/**
 	 * Use this method to add class containing Items/Blocks field (Like
@@ -46,7 +54,7 @@ public class TextureGenRegistry {
 	 * @param modid
 	 */
 	public static void reigster(Object registry, String modid) {
-		if ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment")) {
+		if (Core.isDev()) {
 			registries.add(new TextureStorage(registry, modid));
 		}
 	}
@@ -73,6 +81,10 @@ public class TextureGenRegistry {
 						}
 					} catch (IllegalAccessException e) {
 						throw new ReportedException(CrashReport.makeCrashReport(e, "Unable to get value from registry. Are you using PRIVATE FIELDS IN REGISTRY!!??"));
+					}
+					catch(NullPointerException e)
+					{
+						FMLLog.log(Core.modid, Level.WARN, "Item/Block field %s was not be initialized, skipping", f.getName());
 					}
 				}
 			}
