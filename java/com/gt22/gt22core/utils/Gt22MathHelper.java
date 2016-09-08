@@ -52,4 +52,9 @@ public class Gt22MathHelper
 	{
 		return Math.min(max, Math.max(value, min));
 	}
+	
+	public static boolean isInBound(long value, long min, long max)
+	{
+		return min <= value && value <= max;
+	}
 }
