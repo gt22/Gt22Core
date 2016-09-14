@@ -142,7 +142,7 @@ public class CommandHandler extends CommandBase
 	@Override
 	public void processCommand(ICommandSender sender, String[] args)
 	{
-		String prefix = "/Gt22Ñore ";
+		String prefix = "/Gt22Core ";
 		if (args.length == 0)
 		{
 			sender.addChatMessage(new ChatComponentError("Unknown command, use /Gt22Core help"));
