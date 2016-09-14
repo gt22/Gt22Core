@@ -7,26 +7,29 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.lwjgl.Sys;
+import org.apache.logging.log4j.Level;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.gt22.gt22core.core.Core;
+import com.gt22.gt22core.utils.FileUtils;
+import com.gt22.gt22core.utils.Gt22MathHelper;
+
+import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.block.Block;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ReportedException;
 import net.minecraft.world.World;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.gt22.gt22core.utils.FileUtils;
-import com.gt22.gt22core.utils.Gt22MathHelper;
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.registry.GameData;
 
 public class StructureApi
 {		
+	private static final File structurelist = new File(Loader.instance().getConfigDir() + "/GT22CoreStructure","strucutres.cfg");
 	//Main json names
 	public static final String STRUCTURE = "structure";
 	public static final String PROPERTIES = "properties";
@@ -126,13 +129,13 @@ public class StructureApi
 			return false;
 		}
 		file.delete();
-		if (!StructureJson.getStructurelist().canWrite())
+		if (!structurelist.exists())
 		{
 			return true;
 		}
 		try
 		{
-			FileUtils.deleteLine(StructureJson.getStructurelist(), name);
+			FileUtils.deleteLine(structurelist, name);
 		}
 		catch (IOException e)
 		{
@@ -166,8 +169,8 @@ public class StructureApi
 		ArrayList<JsonObject> ret = new ArrayList<JsonObject>();
 		try
 		{
-			FileUtils.initFile(StructureJson.getStructurelist());
-			BufferedReader list = FileUtils.createReader(StructureJson.getStructurelist());
+			FileUtils.initFile(structurelist);
+			BufferedReader list = FileUtils.createReader(structurelist);
 			String temp = "";
 			int i = 0;
 			while (true)
@@ -181,7 +184,7 @@ public class StructureApi
 				JsonObject jsontemp = StructureApi.getByName(temp);
 				if (jsontemp == null)
 				{
-					FileUtils.deleteLine(StructureJson.getStructurelist(), i);
+					FileUtils.deleteLine(structurelist, i);
 					continue;
 				}
 				ret.add(jsontemp);
@@ -316,7 +319,6 @@ public class StructureApi
 		private String name;
 		private JsonObject json = new JsonObject();
 		private File file;
-		private static File structurelist = new File(Loader.instance().getConfigDir() + "/GT22CoreStructure","strucutres.cfg");
 		private ItemStack[][][] structure;
 		private int[] f, s;
 		private int xSize, ySize, zSize, weight, miny, maxy, worldid;
@@ -392,7 +394,7 @@ public class StructureApi
 						block.addProperty(X_OFFSET, x);
 						block.addProperty(Y_OFFSET, y);
 						block.addProperty(Z_OFFSET, z);
-						block.addProperty(BLOCK_META, structure == null ? 0 : s == null ? 0 : s.getItem() == null ? 0 : s.getItemDamage());
+						block.addProperty(BLOCK_META, structure == null || s == null || s.getItem() == null ? 0 : s.getItemDamage());
 						block.addProperty(BLOCK_NAME, structure == null || s == null || s.getItem() == null ? GameData.getBlockRegistry().getNameForObject(Blocks.air) : GameData.getBlockRegistry().getNameForObject(Block.getBlockFromItem(s.getItem())));
 						structureJson.add(block);
 					}
@@ -439,14 +441,9 @@ public class StructureApi
 			}
 			catch (Exception e)
 			{
-				FMLLog.bigWarning("Cannot write json file for structure " + name);
+				FMLLog.log(Core.modid, Level.ERROR, e, "Unable to write json for structure %s", name);
 				e.printStackTrace();
 			}
-		}
-
-		public static File getStructurelist()
-		{
-			return structurelist;
 		}
 	}
 }
