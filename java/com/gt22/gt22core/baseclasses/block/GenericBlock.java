@@ -16,9 +16,9 @@ import com.gt22.gt22core.utils.ToolClass;
 public class GenericBlock extends BlockBase
 {
 	public IIcon[] icons;
-	private String modid;
+	protected String modid;
 	public int maxmeta = 0;
-	private String typeName;
+	protected String typeName;
 	public ArrayList<String> names = new ArrayList();
 
 	/**

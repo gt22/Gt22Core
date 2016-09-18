@@ -4,6 +4,6 @@ public enum ToolClass
 	{
 		pickaxe,
 		axe,
-		spade, //Shovel
-		none
+		shovel,
+		none;
 	}

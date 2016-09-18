@@ -15,9 +15,9 @@ public class BlockWithGui extends BlockBase
 	 * @param guiid - Gui id for gui handler from mod param
 	 * For other params see {@link BlockBase}
 	 */
-	public BlockWithGui(Material mat, float hardness, float resistance, String unlocName, IMod mod, int creativetabid, String tool, int harvestlevel, int guiid)
+	public BlockWithGui(Material mat, float hardness, float resistance, String unlocName, IMod mod, int creativetabid, String tool, int harvestlevel, int guiid, String texturedir)
 	{
-		super(mat, resistance, resistance, tool, mod, harvestlevel, tool, harvestlevel);
+		super(mat, resistance, resistance, tool, mod, harvestlevel, tool, harvestlevel, texturedir);
 		this.guiid = guiid;
 		this.instance = mod;
 	}
@@ -29,7 +29,7 @@ public class BlockWithGui extends BlockBase
 	 */
 	public BlockWithGui(Material mat, float hardness, float resistance, String unlocName, IMod mod, int creativetabid, ToolClass tool, int harvestlevel, int guiid)
 	{
-		this(mat, hardness, resistance, unlocName, mod, creativetabid, tool.toString(), harvestlevel, guiid);
+		this(mat, hardness, resistance, unlocName, mod, creativetabid, tool.toString(), harvestlevel, guiid, "");
 	}
 	
 	/**

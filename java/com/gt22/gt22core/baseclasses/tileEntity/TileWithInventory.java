@@ -39,7 +39,7 @@ public class TileWithInventory extends TileEntity implements IInventory
 	@Override
 	public ItemStack getStackInSlot(int index)
 	{
-		if (index < 0 || index >= this.getSizeInventory())
+		if (index < 0 || index >= getSizeInventory())
 			return null;
 		return this.inventory[index];
 	}

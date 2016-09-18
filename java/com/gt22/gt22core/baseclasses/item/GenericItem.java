@@ -2,13 +2,11 @@ package com.gt22.gt22core.baseclasses.item;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-
 import com.gt22.gt22core.interfaces.IMod;
 
 public class GenericItem extends ItemBase
@@ -16,24 +14,40 @@ public class GenericItem extends ItemBase
 
 	public IIcon[] icons;
 	public static String modid;
-	private int maxmeta = 0;
 	ArrayList<String> names = new ArrayList();
 
 	/**
-	 * 
-	 * @param mod - instace of mod core
-	 * @param creativetabid - id of mod creative tab
+	 * See {@link ItemBase#ItemBase(String, IMod, int, String)}
+	 * Name ommited due to {@link #addGenericItem(String)} method
 	 */
-	public GenericItem(IMod mod, int creativetabid)
+	public GenericItem(IMod mod, int creativetabid, String textureDir)
 	{
-		super("", mod, creativetabid);
+		super("", mod, creativetabid, textureDir);
 		modid = mod.getModid();
 		setHasSubtypes(true);
 	}
 	
 	/**
-	 * 
-	 * @param mod - instance of the mod core
+	 * See {@link #GenericItem(IMod, int, String)}
+	 * ID defaulted to 0 
+	 */
+	public GenericItem(IMod mod, String textureDir)
+	{
+		this(mod, 0, textureDir);
+	}
+	
+	/**
+	 * See {@link #GenericItem(IMod, int, String)}
+	 * Dir defaulted to empty (assets/modid/textures/items)
+	 */
+	public GenericItem(IMod mod, int creativetabid)
+	{
+		this(mod, creativetabid, "");
+	}
+	
+	/**
+	 * See {@link #GenericItem(IMod, int)}
+	 * ID defaulted to 0
 	 */
 	public GenericItem(IMod mod)
 	{
@@ -46,7 +60,6 @@ public class GenericItem extends ItemBase
 	 */
 	public void addGenericItem(String unlocName)
 	{
-		maxmeta++;
 		names.add(unlocName);
 	}
 
@@ -67,7 +80,7 @@ public class GenericItem extends ItemBase
 	 */
 	public void printMetaWithNames()
 	{
-		for (int i = 0; i < maxmeta; i++)
+		for (int i = 0; i < names.size(); i++)
 		{
 			System.out.println(i + " - " + names.get(i));
 		}
@@ -76,7 +89,7 @@ public class GenericItem extends ItemBase
 	@Override
 	public void getSubItems(Item item, CreativeTabs tab, List list)
 	{
-		for (int i = 0; i < maxmeta; i++)
+		for (int i = 0; i < names.size(); i++)
 		{
 			list.add(new ItemStack(item, 1, i));
 		}
@@ -85,8 +98,8 @@ public class GenericItem extends ItemBase
 	@Override
 	public void registerIcons(IIconRegister reg)
 	{
-		icons = new IIcon[maxmeta];
-		for (int i = 0; i < maxmeta; i++)
+		icons = new IIcon[names.size()];
+		for (int i = 0; i < names.size(); i++)
 		{
 			icons[i] = reg.registerIcon(modid + ":" + names.get(i));
 		}
@@ -95,7 +108,7 @@ public class GenericItem extends ItemBase
 	@Override
 	public IIcon getIconFromDamage(int meta)
 	{
-		if (meta > maxmeta)
+		if (meta > names.size())
 			meta = 0;
 
 		return icons[meta];
@@ -104,6 +117,7 @@ public class GenericItem extends ItemBase
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
 	{
+		int maxmeta = names.size();
 		int meta = stack.getItemDamage();
 		if (meta > maxmeta)
 		{

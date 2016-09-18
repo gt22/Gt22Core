@@ -14,25 +14,25 @@ public class MetaBlock extends BlockBase
 {
 	int maxmeta;
 	IIcon[] icons;
-	public MetaBlock(Material mat, float hardness, float resistance, String unlocName, IMod mod, int creativetabid, String tool, int harvestlevel, int maxmeta)
+	public MetaBlock(Material mat, float hardness, float resistance, String unlocName, IMod mod, int creativetabid, String tool, int harvestlevel, String texturedir, int maxmeta)
 	{
-		super(mat, hardness, resistance, unlocName, mod, creativetabid, tool, harvestlevel);
+		super(mat, hardness, resistance, unlocName, mod, creativetabid, tool, harvestlevel, texturedir);
 		this.maxmeta = maxmeta;
 	}
 	
 	public MetaBlock(Material mat, float hardness, float resistance, String unlocName, IMod mod, int creativetabid, ToolClass tool, int harvestlevel, int maxmeta)
 	{
-		this(mat, hardness, resistance, unlocName, mod, creativetabid, tool.toString(), harvestlevel, maxmeta);
+		this(mat, hardness, resistance, unlocName, mod, creativetabid, tool.toString(), harvestlevel, "", maxmeta);
 	}
 	
 	public MetaBlock(Material mat, float hardness, float resistance, String unlocName, IMod mod, String tool, int harvestlevel, int maxmeta)
 	{
-		this(mat, hardness, resistance, unlocName, mod, 0, tool, harvestlevel, maxmeta);
+		this(mat, hardness, resistance, unlocName, mod, 0, tool, harvestlevel, "", maxmeta);
 	}
 	
 	public MetaBlock(Material mat, float hardness, float resistance, String unlocName, IMod mod, ToolClass tool, int harvestlevel, int maxmeta)
 	{
-		this(mat, hardness, resistance, unlocName, mod, 0, tool.toString(), harvestlevel, maxmeta);
+		this(mat, hardness, resistance, unlocName, mod, 0, tool.toString(), harvestlevel, "", maxmeta);
 	}
 	
 	@Override

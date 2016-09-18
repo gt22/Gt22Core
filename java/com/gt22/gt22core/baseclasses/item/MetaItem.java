@@ -16,20 +16,29 @@ public class MetaItem extends ItemBase
 	 * @param maxmeta - Maximum count of items
 	 * For other params see {@link ItemBase}
 	 */
-	public MetaItem(String unlocName, IMod mod, int creativetabid, int maxmeta)
+	public MetaItem(String unlocName, IMod mod, int creativetabid, String textureDir, int maxmeta)
 	{
-		super(unlocName, mod, creativetabid);
+		super(unlocName, mod, creativetabid, textureDir);
 		setHasSubtypes(true);
 		this.maxmeta = maxmeta;
 	}
 	
 	/**
-	 * @param maxmeta - Maximum count of items
-	 * For other params see {@link ItemBase}
+	 *	See {@link #MetaItem(String, IMod, int, String, int)}
+	 *	ID defaulted to 0 
+	 */
+	public MetaItem(String unlocName, IMod mod, String textureDir, int maxmeta)
+	{
+		this(unlocName, mod, 0, textureDir, maxmeta);
+	}
+	
+	/**
+	 * See {@link #MetaItem(String, IMod, String, int)}
+	 * Dir defaulted to empty (assets/modid/textures/items)
 	 */
 	public MetaItem(String unlocName, IMod mod, int maxmeta)
 	{
-		this(unlocName, mod, 0, maxmeta);
+		this(unlocName, mod, "", maxmeta);
 	}
 	
 	@Override
