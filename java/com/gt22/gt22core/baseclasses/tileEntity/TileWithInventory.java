@@ -152,34 +152,14 @@ public class TileWithInventory extends TileEntity implements IInventory
 	public void writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
-
-		NBTTagList list = new NBTTagList();
-		for (int i = 0; i < this.getSizeInventory(); ++i)
-		{
-			if (this.getStackInSlot(i) != null)
-			{
-				NBTTagCompound stackTag = new NBTTagCompound();
-				stackTag.setByte("Slot", (byte) i);
-				this.getStackInSlot(i).writeToNBT(stackTag);
-				list.appendTag(stackTag);
-			}
-		}
-		nbt.setTag("Items", list);
-
+		nbt.setTag("SyncAndSave", getSyncNbt());
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-
-		NBTTagList list = nbt.getTagList("Items", 10);
-		for (int i = 0; i < list.tagCount(); ++i)
-		{
-			NBTTagCompound stackTag = list.getCompoundTagAt(i);
-			int slot = stackTag.getByte("Slot") & 255;
-			this.setInventorySlotContents(slot, ItemStack.loadItemStackFromNBT(stackTag));
-		}
+		readSyncNBT(nbt.getCompoundTag("SyncAndSave"));
 	}
 
 	protected NBTTagCompound getSyncNbt()

@@ -6,40 +6,47 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import org.apache.logging.log4j.Level;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.gt22.gt22core.core.Core;
+import com.gt22.gt22core.utils.FileUtils;
+import com.gt22.gt22core.utils.Gt22MathHelper;
+
+import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.block.Block;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ReportedException;
 import net.minecraft.world.World;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.gt22.gt22core.utils.FileUtils;
-import com.gt22.gt22core.utils.Gt22MathHelper;
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.Loader;
 
 public class StructureApi
 {		
+	private static final File structurelist = new File(Loader.instance().getConfigDir() + "/GT22CoreStructure","strucutres.cfg");
 	//Main json names
-	public static final String structure = "structure";
-	public static final String properties = "properties";
+	public static final String STRUCTURE = "structure";
+	public static final String PROPERTIES = "properties";
 	//Structure names
-	public static final String xOffset = "xOffset";
-	public static final String yOffset = "yOffset";
-	public static final String zOffset = "zOffset";
-	public static final String blockmeta = "meta";
-	public static final String blockname = "blockname";
+	public static final String X_OFFSET = "xOffset";
+	public static final String Y_OFFSET = "yOffset";
+	public static final String Z_OFFSET = "zOffset";
+	public static final String BLOCK_META = "meta";
+	public static final String BLOCK_NAME = "blockname";
 	//Properties names
-	public static final String weight = "weight";
-	public static final String name = "name";
-	public static final String target = "target";
-	public static final String usetarget = "usetarget";
-	public static final String miny = "miny";
-	public static final String maxy = "maxy";
-	public static final String world = "world";
+	public static final String WEIGHT = "weight";
+	public static final String NAME = "name";
+	public static final String TARGET = "target";
+	public static final String USE_TARGET = "usetarget";
+	public static final String MIN_Y = "miny";
+	public static final String MAX_Y = "maxy";
+	public static final String WORLD = "world";
 	/**
 	 * Create and write to file strcuture, this structure will not generate in normal ways. Designet to use form commands, but can be used in other cases
 	 * @param name - name of the structure
@@ -105,7 +112,7 @@ public class StructureApi
 	 */
 	public static JsonObject getStructureProperties(String name)
 	{
-		return getByName(name).getAsJsonObject(properties);
+		return getByName(name).getAsJsonObject(PROPERTIES);
 	}
 
 	/**
@@ -122,13 +129,13 @@ public class StructureApi
 			return false;
 		}
 		file.delete();
-		if (!StructureJson.getStructurelist().canWrite())
+		if (!structurelist.exists())
 		{
 			return true;
 		}
 		try
 		{
-			FileUtils.deleteLine(StructureJson.getStructurelist(), name);
+			FileUtils.deleteLine(structurelist, name);
 		}
 		catch (IOException e)
 		{
@@ -162,8 +169,8 @@ public class StructureApi
 		ArrayList<JsonObject> ret = new ArrayList<JsonObject>();
 		try
 		{
-			FileUtils.initFile(StructureJson.getStructurelist());
-			BufferedReader list = FileUtils.createReader(StructureJson.getStructurelist());
+			FileUtils.initFile(structurelist);
+			BufferedReader list = FileUtils.createReader(structurelist);
 			String temp = "";
 			int i = 0;
 			while (true)
@@ -177,7 +184,7 @@ public class StructureApi
 				JsonObject jsontemp = StructureApi.getByName(temp);
 				if (jsontemp == null)
 				{
-					FileUtils.deleteLine(StructureJson.getStructurelist(), i);
+					FileUtils.deleteLine(structurelist, i);
 					continue;
 				}
 				ret.add(jsontemp);
@@ -200,7 +207,7 @@ public class StructureApi
 		ArrayList<String> ret = new ArrayList<String>();
 		for (JsonObject j : structures)
 		{
-			ret.add(j.getAsJsonObject(properties).get(name).getAsString());
+			ret.add(j.getAsJsonObject(PROPERTIES).get(NAME).getAsString());
 		}
 		return ret;
 	}
@@ -220,9 +227,10 @@ public class StructureApi
 			return;
 		}
 		ArrayList<Integer> weights = new ArrayList<Integer>();
-		for (JsonObject j : structures)
+		for (int i = 0; i < structures.size(); i++)
 		{
-			int weight = j.getAsJsonObject(properties).get(StructureApi.weight).getAsInt();
+			JsonObject j = structures.get(i);
+			int weight = j.getAsJsonObject(PROPERTIES).get(StructureApi.WEIGHT).getAsInt();
 			if (weight < 0)
 			{
 				structures.remove(j);
@@ -239,9 +247,9 @@ public class StructureApi
 		int midweight = weights.get((weights.size() / 2));
 		if (randweight >= midweight)
 		{
-			JsonObject structure = structures.get(Gt22MathHelper.getPositionOfClosest(weights, world.rand.nextInt(weights.get(weights.size() - 1) - world.rand.nextInt(weights.get(weights.size() - 2)))));
-			JsonObject properties = structure.getAsJsonObject(StructureApi.properties);
-			int miny = properties.get(StructureApi.miny).getAsInt(), maxy = properties.get(StructureApi.maxy).getAsInt(), ydiff = Gt22MathHelper.diff(miny, maxy);
+			JsonObject structure = weights.size() == 1 ? structures.get(0) : structures.get(Gt22MathHelper.getPositionOfClosest(weights, world.rand.nextInt(weights.get(weights.size() - 1) - world.rand.nextInt(weights.get(weights.size() - 2)))));
+			JsonObject properties = structure.getAsJsonObject(StructureApi.PROPERTIES);
+			int miny = properties.get(StructureApi.MIN_Y).getAsInt(), maxy = properties.get(StructureApi.MAX_Y).getAsInt(), ydiff = Gt22MathHelper.diff(miny, maxy);
 			generateStructure(structure, world, x, miny + world.rand.nextInt(ydiff), z);
 		}
 	}
@@ -279,21 +287,22 @@ public class StructureApi
 	 */
 	public static void generateStructure(JsonObject json, World world, int x, int y, int z, boolean ignoreJsonTargetSetting, boolean ignoreJsonWorldSetting)
 	{
-		JsonObject properties = json.getAsJsonObject(StructureApi.properties);
-		if (ignoreJsonWorldSetting || world.provider.dimensionId != properties.get(StructureApi.world).getAsInt())
+		JsonObject properties = json.getAsJsonObject(StructureApi.PROPERTIES);
+		if (!ignoreJsonWorldSetting && world.provider.dimensionId != properties.get(StructureApi.WORLD).getAsInt())
 		{
 			return;
 		}
-		Block target = Block.getBlockFromName(properties.get(StructureApi.target).getAsString());
-		boolean forcetarget = !ignoreJsonTargetSetting && properties.get(StructureApi.usetarget).getAsBoolean();
-		JsonArray str = json.getAsJsonArray(structure);
-		if (forcetarget)
+		Block target = GameData.getBlockRegistry().getObject(properties.get(StructureApi.TARGET).getAsString());
+		boolean forcetarget = !ignoreJsonTargetSetting && properties.get(StructureApi.USE_TARGET).getAsBoolean();
+		JsonArray str = json.getAsJsonArray(STRUCTURE);
+		if (forcetarget && !ignoreJsonTargetSetting)
 		{
 			for (JsonElement e : str)
 			{
 				JsonObject o = e.getAsJsonObject();
-				if (world.getBlock(x + o.get(xOffset).getAsInt(), y + o.get(yOffset).getAsInt(), z + o.get(zOffset).getAsInt()) != target)
+				if (world.getBlock(x + o.get(X_OFFSET).getAsInt(), y + o.get(Y_OFFSET).getAsInt(), z + o.get(Z_OFFSET).getAsInt()) != target)
 				{
+					System.out.println("target");
 					return;
 				}
 			}
@@ -301,7 +310,7 @@ public class StructureApi
 		for (JsonElement e : str)
 		{
 			JsonObject o = e.getAsJsonObject();
-			world.setBlock(x + o.get(xOffset).getAsInt(), y + o.get(yOffset).getAsInt(), z + o.get(zOffset).getAsInt(), Block.getBlockFromName(o.get(blockname).getAsString().substring(5)), o.get(blockmeta).getAsInt(), 3);
+			world.setBlock(x + o.get(X_OFFSET).getAsInt(), y + o.get(Y_OFFSET).getAsInt(), z + o.get(Z_OFFSET).getAsInt(), GameData.getBlockRegistry().getObject(o.get(BLOCK_NAME).getAsString()), o.get(BLOCK_META).getAsInt(), 3);
 		}
 	}
 	
@@ -310,7 +319,6 @@ public class StructureApi
 		private String name;
 		private JsonObject json = new JsonObject();
 		private File file;
-		private static File structurelist = new File(Loader.instance().getConfigDir() + "/GT22CoreStructure","strucutres.cfg");
 		private ItemStack[][][] structure;
 		private int[] f, s;
 		private int xSize, ySize, zSize, weight, miny, maxy, worldid;
@@ -337,7 +345,7 @@ public class StructureApi
 			this.file = new File(Loader.instance().getConfigDir() + "/GT22CoreStructure", name + ".json");
 			this.f = firstpoint;
 			this.s = secondpoint;
-			this.target = target.getUnlocalizedName().substring(5);
+			this.target = GameData.getBlockRegistry().getNameForObject(target);
 			this.usetarget = usetarget;
 			this.miny = miny;
 			this.maxy = maxy;
@@ -382,25 +390,26 @@ public class StructureApi
 					for(int z = 0; z < zSize; z++)
 					{
 						JsonObject block = new JsonObject();
-						block.addProperty(xOffset, x);
-						block.addProperty(yOffset, y);
-						block.addProperty(zOffset, z);
-						block.addProperty(blockmeta, structure == null ? 0 : structure[x][y][z] == null ? 0 : structure[x][y][z].getItem() == null ? 0 : structure[x][y][z].getItemDamage());
-						block.addProperty(blockname, structure == null || structure[x][y][z] == null || structure[x][y][z].getItem() == null ? Blocks.air.getUnlocalizedName() : structure[x][y][z].getItem().getUnlocalizedName());
+						ItemStack s = structure[x][y][z];
+						block.addProperty(X_OFFSET, x);
+						block.addProperty(Y_OFFSET, y);
+						block.addProperty(Z_OFFSET, z);
+						block.addProperty(BLOCK_META, structure == null || s == null || s.getItem() == null ? 0 : s.getItemDamage());
+						block.addProperty(BLOCK_NAME, structure == null || s == null || s.getItem() == null ? GameData.getBlockRegistry().getNameForObject(Blocks.air) : GameData.getBlockRegistry().getNameForObject(Block.getBlockFromItem(s.getItem())));
 						structureJson.add(block);
 					}
 				}
 			}
 			JsonObject structureProperties = new JsonObject();
-			structureProperties.addProperty(StructureApi.weight, weight);
-			structureProperties.addProperty(StructureApi.name, name);
-			structureProperties.addProperty(StructureApi.target, target);
-			structureProperties.addProperty(StructureApi.usetarget, usetarget);
-			structureProperties.addProperty(StructureApi.miny, miny);
-			structureProperties.addProperty(StructureApi.maxy, maxy);
-			structureProperties.addProperty(StructureApi.world, worldid);
-			json.add(StructureApi.structure, structureJson);
-			json.add(properties, structureProperties);
+			structureProperties.addProperty(StructureApi.WEIGHT, weight);
+			structureProperties.addProperty(StructureApi.NAME, name);
+			structureProperties.addProperty(StructureApi.TARGET, target);
+			structureProperties.addProperty(StructureApi.USE_TARGET, usetarget);
+			structureProperties.addProperty(StructureApi.MIN_Y, miny);
+			structureProperties.addProperty(StructureApi.MAX_Y, maxy);
+			structureProperties.addProperty(StructureApi.WORLD, worldid);
+			json.add(StructureApi.STRUCTURE, structureJson);
+			json.add(PROPERTIES, structureProperties);
 		}
 		
 		private void generateStructure(World world)
@@ -432,14 +441,9 @@ public class StructureApi
 			}
 			catch (Exception e)
 			{
-				FMLLog.bigWarning("Cannot write json file for structure " + name);
+				FMLLog.log(Core.modid, Level.ERROR, e, "Unable to write json for structure %s", name);
 				e.printStackTrace();
 			}
-		}
-
-		public static File getStructurelist()
-		{
-			return structurelist;
 		}
 	}
 }
